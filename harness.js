@@ -1,18 +1,19 @@
 const readline = require('readline');
 const { search } = require('./dist/index');
+const EMPTY_QUERY = '';
 
 const normalizeZipCode = (input) => {
     const zipCode = String(input).trim();
 
     if (!/^\d{5}$/.test(zipCode)) {
-        throw new Error('ZIP code must contain exactly 5 digits');
+        throw new Error('ZIP code must contain exactly 5 digits (e.g. 10115)');
     }
 
-    return Number(zipCode);
+    return zipCode;
 };
 
 const fetchOffersByZipCode = async (zipCode) => {
-    return search('', { zipCode });
+    return search(EMPTY_QUERY, { zipCode });
 };
 
 const promptZipCode = () => {
@@ -23,12 +24,12 @@ const promptZipCode = () => {
 
     return new Promise((resolve, reject) => {
         rl.question('Enter ZIP code: ', (answer) => {
-            rl.close();
-
             try {
                 resolve(normalizeZipCode(answer));
             } catch (error) {
                 reject(error);
+            } finally {
+                rl.close();
             }
         });
     });
@@ -42,7 +43,7 @@ const run = async () => {
         const offers = await fetchOffersByZipCode(zipCode);
         console.log(JSON.stringify(offers, null, 2));
     } catch (error) {
-        console.error(error instanceof Error ? error.message : error);
+        console.error(`Error: ${error instanceof Error ? error.message : String(error)}`);
         process.exitCode = 1;
     }
 };
