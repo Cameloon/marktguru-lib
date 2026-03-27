@@ -48,6 +48,22 @@ const doSearch = async () => {
 | allowedRetailers | An array of retailers. See [here](src/@types/marktguru.d.ts) on line 2 for some retailers | []      |
 | zipCode          | The zip code of area/city where to search for offers                                      | 60487   |
 
+## ZIP code harness (simple CLI)
+
+If you just want to fetch offers for a ZIP code/area, you can use the built-in harness:
+
+```bash
+npm install
+npm run build
+npm run harness -- 10115
+```
+
+It also supports interactive input if no ZIP code argument is passed:
+
+```bash
+npm run harness
+```
+
 ### Offer
 
 How an Offer object looks like, you can see [here](src/@types/marktguru.d.ts) on line 77
