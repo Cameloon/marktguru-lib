@@ -70,6 +70,59 @@ const doSearch = async () => {
 }
 ```
 
+### Get offer examples for one or multiple products
+
+```ts
+import { search } from 'marktguru';
+
+const products = ['cola', 'butter', 'pasta']; // can also be just ['cola']
+const zipCode = 10115;
+
+type SearchResult = {
+    query: string;
+    offers: Awaited<ReturnType<typeof search>>;
+};
+
+const getOffersSequentially = async (): Promise<SearchResult[]> => {
+    const allResults: SearchResult[] = [];
+
+    for (const query of products) {
+        try {
+            const offers = await search(query, { zipCode, limit: 20 });
+            allResults.push({ query, offers });
+        } catch (error) {
+            // continue with the next query if one request fails
+            allResults.push({ query, offers: [] });
+            console.error(`Search failed for "${query}"`, error);
+        }
+    }
+
+    return allResults;
+};
+```
+
+This gives you a simple sequential pipeline that you can persist into your own database.
+
+### Should you use this library or scrape grocery shops directly?
+
+Start with this library first if your goal is quick offer ingestion:
+
+- one integration point instead of many separate retailer scrapers
+- consistent search flow (query + ZIP + optional retailer filtering)
+- faster to prototype and evaluate
+
+Consider direct retailer scraping only as a later fallback/complement, because it usually means:
+
+- maintaining many brittle parsers
+- handling anti-bot/HTML changes per retailer
+- higher ongoing maintenance cost
+
+For an ERP workflow, a pragmatic path is often:
+
+1. Use this library to ingest offer candidates.
+2. Store and normalize into your own schema.
+3. Add extra sources (including retailer-specific scraping or official feeds) only where coverage/reliability is missing.
+
 ### SearchOptions
 
 | Key              | Description                                                                               | Default |
