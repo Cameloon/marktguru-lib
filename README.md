@@ -2,6 +2,27 @@
 
 A library to search for offers on [marktguru.de](https://marktguru.de).
 
+## Project status
+
+- The last functional code change in this repository was on **2022-02-03**.
+- This package is currently **not actively maintained**.
+- It can still work, but it depends on upstream `marktguru.de` HTML/API behavior, which can change at any time.
+
+## Does it still work?
+
+The quickest way to verify is to run:
+
+```bash
+npm install
+npm run build
+npm run test
+```
+
+Notes:
+
+- Tests are integration tests and require live access to `marktguru.de`.
+- In restricted/offline environments, tests can fail with network/DNS errors (for example `ENOTFOUND marktguru.de`) even if local code is unchanged.
+
 ## Usage
 
 ```ts
