@@ -23,6 +23,37 @@ Notes:
 - Tests are integration tests and require live access to `marktguru.de`.
 - In restricted/offline environments, tests can fail with network/DNS errors (for example `ENOTFOUND marktguru.de`) even if local code is unchanged.
 
+## What this library actually does (and does not do)
+
+### What it does
+
+- Calls `https://marktguru.de` to extract temporary API keys from page config data.
+- Uses those keys to call Marktguru's offer search endpoint.
+- Returns raw offer objects (price, oldPrice, validityDates, advertisers, product, images, etc.).
+- Supports basic filtering by search query, zip code, pagination, and allowed retailers.
+
+### What it does not do
+
+- It is **not** an official API client.
+- It does **not** provide store-level stock/availability.
+- It does **not** normalize products into a stable ERP product master.
+- It does **not** handle authentication/session flows for protected endpoints.
+- It does **not** guarantee long-term stability (keys, HTML structure, and API behavior can change upstream at any time).
+
+### Is it useful for a kitchen ERP sourcing workflow?
+
+Potentially, but mainly as a lightweight upstream signal for "current promotional offers" in Germany. It can be useful for:
+
+- ingesting promotional prices into a comparison/enrichment pipeline
+- triggering suggestion logic (e.g. "buy this item this week at retailer X")
+
+You will likely still need your own ERP-side logic for:
+
+- product matching/normalization (offer text -> internal SKU)
+- data quality checks and deduplication
+- caching/retries/rate limiting
+- fallback sources when Marktguru changes or is unavailable
+
 ## Usage
 
 ```ts
